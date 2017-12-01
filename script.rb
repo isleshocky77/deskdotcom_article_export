@@ -31,6 +31,8 @@ require 'rails-html-sanitizer'
 
 full_sanitizer = Rails::Html::FullSanitizer.new
 
+puts 'Starting'
+
 # create the file system
 Dir.mkdir File.expand_path(FOLDER_NAME) unless Dir.exists?(File.expand_path(FOLDER_NAME))
 ['data', 'data/images'].each do |dir|
@@ -68,7 +70,13 @@ CSV.open("#{File.expand_path(FOLDER_NAME)}/articles.csv", 'wb', {
   begin
     # run through the topics
     topics.entries.each do |topic|
+
+      puts '======'
+      puts 'Looking at ' + topic.name
       next unless topic.in_support_center
+
+      puts 'Fetching ' + topic.name
+
 
       # fetch the articles
       articles = topic.articles
@@ -76,7 +84,10 @@ CSV.open("#{File.expand_path(FOLDER_NAME)}/articles.csv", 'wb', {
       begin
         # run through the articles
         articles.entries.each do |article|
+          puts '  ----'
+          puts '  Looking at ' + article.subject
           next unless article.in_support_center
+          puts '  Fetching ' + article.subject
 
           # fetch the translations
           translations = article.translations
@@ -87,6 +98,8 @@ CSV.open("#{File.expand_path(FOLDER_NAME)}/articles.csv", 'wb', {
               is_master   = translation.locale.downcase == MASTER_LANGUAGE.downcase
               file_name   = "data/#{article.href[/\d+$/]}_#{translation.locale}.html"
               img_folder  = "images/#{article.href[/\d+$/]}_#{translation.locale}"
+
+              puts '      Fetching Translation ' + translation.locale
 
               # add the article to the csv
               csv << [
@@ -110,6 +123,9 @@ CSV.open("#{File.expand_path(FOLDER_NAME)}/articles.csv", 'wb', {
                 body = translation.body.tap do |content|
                   content.scan(/<img[^>]+src="([^">]+)"/).each do |image|
                     begin
+
+                      puts '      ? Looking at image ' + image.to_s
+
                       # build the uri
                       image_uri = URI::parse(image.first)
                       image_uri.scheme = 'https' unless image_uri.scheme
@@ -119,6 +135,7 @@ CSV.open("#{File.expand_path(FOLDER_NAME)}/articles.csv", 'wb', {
                       image_name = File.basename(image_uri.path)
 
                       # download the file
+                      puts '      > ' + image_uri.to_s + ' -> ' + image_name
                       File.open("#{File.expand_path(FOLDER_NAME)}/data/#{img_folder}/#{image_name}", 'wb') do |file|
                         file.print open(image_uri.to_s, allow_redirections: :all).read
                       end
@@ -145,3 +162,5 @@ CSV.open("#{File.expand_path(FOLDER_NAME)}/articles.csv", 'wb', {
 
   end while topics = topics.next
 end
+
+puts 'Finished Successfully'
