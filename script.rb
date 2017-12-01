@@ -131,8 +131,8 @@ CSV.open("#{File.expand_path(FOLDER_NAME)}/articles.csv", 'wb', {
                       image_uri.scheme = 'https' unless image_uri.scheme
                       image_uri.host   = URI::parse(ENDPOINT).host unless image_uri.host
 
-                      # get the name
-                      image_name = File.basename(image_uri.path)
+                      # create an image name
+                      image_name = Digest::MD5.hexdigest image_uri.to_s
 
                       # download the file
                       puts '      > ' + image_uri.to_s + ' -> ' + image_name
