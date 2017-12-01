@@ -5,7 +5,7 @@ Based on the [tstacl](https://github.com/tstachl)'s Gist : https://gist.github.c
 The script is exporting every published article into a CSV file and all the HTML files.
 
 
-## Configuration
+## Configuration
 
 In Desk.com Admin part:
 
