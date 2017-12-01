@@ -14,6 +14,12 @@ In Desk.com Admin part:
 
 In `script.rb`, add your API credentials and your desk subdomain.
 
+## Usage
+
+```
+$ bundle install
+$ bundle exec ruby script.rb
+```
 
 ## License
 
