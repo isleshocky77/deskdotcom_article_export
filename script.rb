@@ -9,8 +9,9 @@ CONSUMER_SECRET = ''
 ENDPOINT      = 'https://example.desk.com'
 
 # OTHER
-FOLDER_NAME       = './export'
 MASTER_LANGUAGE   = 'fr'
+time              = Time.new
+FOLDER_NAME       = './export_' + time.strftime("%Y-%m-%d\T%H:%M:%S")
 SUMMARY_FIELD     = 'body__c'
 DESCRIPTION_FIELD = 'description__c'
 CHANNELS          = 'application+sites+csp'
