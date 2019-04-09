@@ -12,7 +12,7 @@ In Desk.com Admin part:
 - Go in settings
 - In API panel, click Add "*API Application*" and get the credentials
 
-In `script.rb`, add your API credentials and your desk subdomain.
+Copy `.env.dist` to `.env`, and update your API credentials and desk.com subdomain.
 
 ## Usage
 

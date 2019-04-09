@@ -1,15 +1,16 @@
+require 'dotenv/load'
 ### CONFIGURATION
 #################
 
 # CONNECTION
-TOKEN           = ''
-TOKEN_SECRET    = ''
-CONSUMER_KEY    = ''
-CONSUMER_SECRET = ''
-ENDPOINT      = 'https://example.desk.com'
+TOKEN           = ENV['TOKEN']
+TOKEN_SECRET    = ENV['TOKEN_SECRET']
+CONSUMER_KEY    = ENV['CONSUMER_KEY']
+CONSUMER_SECRET = ENV['CONSUMER_SECRET']
+ENDPOINT        = ENV['ENDPOINT']
 
 # OTHER
-MASTER_LANGUAGE   = 'fr'
+MASTER_LANGUAGE   = ENV['MASTER_LANGUAGE']
 time              = Time.new
 FOLDER_NAME       = './export_' + time.strftime("%Y-%m-%d\T%H:%M:%S")
 SUMMARY_FIELD     = 'body__c'
