@@ -152,23 +152,34 @@ CSV.open("#{File.expand_path(FOLDER_NAME)}/articles.csv", 'wb', {
 
                       puts '      ? Looking at image ' + image.to_s
 
-                      # build the uri
                       image_uri = URI::parse(image.first)
-                      image_uri.scheme = 'https' unless image_uri.scheme
-                      image_uri.host   = URI::parse(ENDPOINT).host unless image_uri.host
 
-                      # create an image name
+                      if not image_uri.scheme
+                        # Must Authenticate local images
+                        require 'net/http'
+                        http = Net::HTTP.new('coachmeplus.desk.com', 443)
+                        http.use_ssl = true
+                        http.verify_mode = OpenSSL::SSL::VERIFY_NONE
+                        headers = {
+                          'Cookie' => "authenticated_customer_credentials=#{ENV['AUTHENTICATED_CUSTOMER_CREDENTIALS']};",
+                        }
+                        resp = http.request_get(image_uri.to_s, headers)
+                        redirectS3Location = resp['Location']
+                        image_uri = URI::parse(redirectS3Location)
+                      end
+
                       image_name = Digest::MD5.hexdigest image_uri.to_s
-
-                      # download the file
                       puts '      > ' + image_uri.to_s + ' -> ' + image_name
                       File.open("#{File.expand_path(FOLDER_NAME)}/data/#{img_folder}/#{image_name}", 'wb') do |file|
                         file.print open(image_uri.to_s, allow_redirections: :all).read
                       end
 
                       # change the image src to the new path
-                      content[image.first] = "#{img_folder}/#{image_name}"
-                    rescue
+                      search = Regexp.new(Regexp.escape(image.first))
+                      content.gsub!(search, "#{img_folder}/#{image_name}")
+                    rescue StandardError => e
+                      puts e.message
+                      puts e.backtrace.inspect
                     end
                   end
                 end

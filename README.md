@@ -14,6 +14,8 @@ In Desk.com Admin part:
 
 Copy `.env.dist` to `.env`, and update your API credentials and desk.com subdomain.
 
+`AUTHENTICATED_CUSTOMER_CREDENTIALS` is a special variable which can be found in the cookie of all authenticated requests in the Support Center. It's needed in order to get embedded attachments within articles.
+
 ## Usage
 
 ```
