@@ -91,7 +91,6 @@ CSV.open("#{File.expand_path(FOLDER_NAME)}/articles.csv", 'wb', {
         articles.embed(:brands).entries.each do |article|
           puts '  ----'
           puts '  Looking at ' + article.id.to_s + ' : ' + article.subject
-          next unless article.in_support_center
           puts '  Fetching ' + article.subject
 
           # fetch attachments
