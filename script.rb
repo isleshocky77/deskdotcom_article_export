@@ -46,7 +46,7 @@ end
 
 # create the file system
 Dir.mkdir File.expand_path(FOLDER_NAME) unless Dir.exists?(File.expand_path(FOLDER_NAME))
-['data', 'data/images'].each do |dir|
+['data', 'data/images', 'data/attachments'].each do |dir|
   Dir.mkdir("#{File.expand_path(FOLDER_NAME)}/#{dir}") unless Dir.exists?("#{File.expand_path(FOLDER_NAME)}/#{dir}")
 end
 
@@ -93,6 +93,26 @@ CSV.open("#{File.expand_path(FOLDER_NAME)}/articles.csv", 'wb', {
           puts '  Looking at ' + article.id.to_s + ' : ' + article.subject
           next unless article.in_support_center
           puts '  Fetching ' + article.subject
+
+          # fetch attachments
+          puts '      Fetching Attachments'
+          attachments = article.attachments
+          attachments_folder  = "attachments/#{article.href[/\d+$/]}"
+          Dir.mkdir("#{File.expand_path(FOLDER_NAME)}/data/#{attachments_folder}") rescue 0
+
+          begin
+            attachments.entries.each do |attachment|
+              attachmentResponse = DeskApi.get attachment.url
+
+              puts '      > ' + attachment.url + ' -> ' + attachment.file_name
+              File.open("#{File.expand_path(FOLDER_NAME)}/data/#{attachments_folder}/#{attachment.file_name}", 'wb') do |file|
+                file.write(attachmentResponse.body)
+              end
+            end
+          end
+
+          # delete attachments folder if empty
+          Dir.delete("#{File.expand_path(FOLDER_NAME)}/data/#{attachments_folder}") rescue 0
 
           # fetch the translations
           translations = article.translations
