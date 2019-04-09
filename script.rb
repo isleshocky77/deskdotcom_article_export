@@ -58,7 +58,7 @@ CSV.open("#{File.expand_path(FOLDER_NAME)}/articles.csv", 'wb', {
   end
 
   # write the headers
-  csv << ['Id', 'isMaster Language', 'In support center', 'Title', 'Body', 'File name', 'Category', 'Channels', 'Language', 'quickcode']
+  csv << ['Id', 'isMaster Language', 'In support center', 'Title', 'Body', 'File name', 'Category', 'Channels', 'Language', 'quickcode', 'brands']
 
   # get the topics
   topics = DeskApi::Client.new({
@@ -85,7 +85,7 @@ CSV.open("#{File.expand_path(FOLDER_NAME)}/articles.csv", 'wb', {
 
       begin
         # run through the articles
-        articles.entries.each do |article|
+        articles.embed(:brands).entries.each do |article|
           puts '  ----'
           puts '  Looking at ' + article.id.to_s + ' : ' + article.subject
           next unless article.in_support_center
@@ -114,7 +114,8 @@ CSV.open("#{File.expand_path(FOLDER_NAME)}/articles.csv", 'wb', {
                 is_master ? topic.name : '',
                 is_master ? CHANNELS : '',
                 translation.locale,
-                article.quickcode
+                article.quickcode,
+                article.brands.map{|k| "#{k.name}"}.join(',')
               ]
 
               # create an image folder for this article
