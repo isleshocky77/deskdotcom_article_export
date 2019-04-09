@@ -58,7 +58,7 @@ CSV.open("#{File.expand_path(FOLDER_NAME)}/articles.csv", 'wb', {
   end
 
   # write the headers
-  csv << ['isMaster Language', 'In support center', 'Title', 'Body', 'File name', 'Category', 'Channels', 'Language', 'quickcode']
+  csv << ['Id', 'isMaster Language', 'In support center', 'Title', 'Body', 'File name', 'Category', 'Channels', 'Language', 'quickcode']
 
   # get the topics
   topics = DeskApi::Client.new({
@@ -105,6 +105,7 @@ CSV.open("#{File.expand_path(FOLDER_NAME)}/articles.csv", 'wb', {
 
               # add the article to the csv
               csv << [
+                article.id.to_s,
                 is_master ? 1 : 0,
                 article.in_support_center,
                 translation.subject,
