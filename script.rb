@@ -35,6 +35,15 @@ full_sanitizer = Rails::Html::FullSanitizer.new
 
 puts 'Starting to export to ' + FOLDER_NAME
 
+# setup Api
+DeskApi.configure do |config|
+  config.token           = TOKEN
+  config.token_secret    = TOKEN_SECRET
+  config.consumer_key    = CONSUMER_KEY
+  config.consumer_secret = CONSUMER_SECRET
+  config.endpoint = ENDPOINT
+end
+
 # create the file system
 Dir.mkdir File.expand_path(FOLDER_NAME) unless Dir.exists?(File.expand_path(FOLDER_NAME))
 ['data', 'data/images'].each do |dir|
@@ -61,13 +70,7 @@ CSV.open("#{File.expand_path(FOLDER_NAME)}/articles.csv", 'wb', {
   csv << ['Id', 'isMaster Language', 'In support center', 'Title', 'Body', 'File name', 'Category', 'Channels', 'Language', 'quickcode', 'brands']
 
   # get the topics
-  topics = DeskApi::Client.new({
-    token:            TOKEN,
-    token_secret:     TOKEN_SECRET,
-    consumer_key:     CONSUMER_KEY,
-    consumer_secret:  CONSUMER_SECRET,
-    endpoint:         ENDPOINT
-  }).topics
+  topics = DeskApi.topics
 
   begin
     # run through the topics
