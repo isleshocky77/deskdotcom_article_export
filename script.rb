@@ -31,7 +31,7 @@ require 'rails-html-sanitizer'
 
 full_sanitizer = Rails::Html::FullSanitizer.new
 
-puts 'Starting'
+puts 'Starting to export to ' + FOLDER_NAME
 
 # create the file system
 Dir.mkdir File.expand_path(FOLDER_NAME) unless Dir.exists?(File.expand_path(FOLDER_NAME))
@@ -85,7 +85,7 @@ CSV.open("#{File.expand_path(FOLDER_NAME)}/articles.csv", 'wb', {
         # run through the articles
         articles.entries.each do |article|
           puts '  ----'
-          puts '  Looking at ' + article.subject
+          puts '  Looking at ' + article.id.to_s + ' : ' + article.subject
           next unless article.in_support_center
           puts '  Fetching ' + article.subject
 
